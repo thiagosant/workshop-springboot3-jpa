@@ -1,5 +1,7 @@
 package com.sansoft.springcourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +16,6 @@ import java.util.Set;
 @Entity
 @Table(name = "tb_product")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Product implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -22,7 +23,6 @@ public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String description;
     private Double price;
@@ -35,12 +35,27 @@ public class Product implements Serializable {
     @Setter(AccessLevel.NONE)
     private Set<Category> categories = new HashSet<>();
 
+    @Setter(AccessLevel.NONE)
+    @Getter(onMethod = @__( @JsonIgnore ))
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> items = new HashSet<>();
+
     public Product(Long id, String name, String description, Double price, String imgUrl) {
+        super();
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
+    }
+
+    @JsonIgnore
+    public Set<Order> getOrders() {
+        Set<Order> set = new HashSet<>();
+        for (OrderItem x : items) {
+            set.add(x.getOrder());
+        }
+        return set;
     }
 
     @Override
