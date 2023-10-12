@@ -1,5 +1,6 @@
 package com.sansoft.springcourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,7 @@ public class User implements Serializable {
 
 
     @Setter(AccessLevel.NONE)
+    @JsonIgnore
     @OneToMany(mappedBy = "client")
     private List<Order> orders = new ArrayList<>();
 
