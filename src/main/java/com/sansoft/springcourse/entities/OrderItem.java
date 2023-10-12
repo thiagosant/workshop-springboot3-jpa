@@ -1,5 +1,6 @@
 package com.sansoft.springcourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sansoft.springcourse.entities.pk.OrderItemPK;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,7 +21,8 @@ public class OrderItem implements Serializable {
     @EmbeddedId
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private OrderItemPK id;
+    private OrderItemPK id = new OrderItemPK();
+
     private Integer quantity;
     private Double price;
 
@@ -32,6 +34,7 @@ public class OrderItem implements Serializable {
         this.price = price;
     }
 
+    @JsonIgnore
     public Order getOrder(){
         return id.getOrder();
     }

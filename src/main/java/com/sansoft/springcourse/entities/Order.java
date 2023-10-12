@@ -8,6 +8,9 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,7 +23,6 @@ public class Order implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -35,6 +37,10 @@ public class Order implements Serializable {
     @JoinColumn(name = "client_id")
     private User client;
 
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "id.order")
+    private Set<OrderItem> items = new HashSet<>();
+
     public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
         this.id = id;
         this.moment = moment;
@@ -48,5 +54,17 @@ public class Order implements Serializable {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         if (orderStatus != null) this.orderStatus = orderStatus.getCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order order)) return false;
+        return Objects.equals(getId(), order.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
